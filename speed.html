@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speed Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        #results {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Speed Test</h1>
+    <button onclick="runSpeedTest()">Run Speed Test</button>
+    <div id="results"></div>
+
+    <script>
+        async function runSpeedTest() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = 'Testing...';
+
+            try {
+                const response = await fetch('https://www.speedtest.net/api/js/speedtest-xml.php');
+                const xmlResponse = await response.text();
+
+                // Extract download and upload speeds from XML response
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xmlResponse, 'text/xml');
+                const downloadSpeed = xmlDoc.getElementsByTagName('download')[0].childNodes[0].nodeValue;
+                const uploadSpeed = xmlDoc.getElementsByTagName('upload')[0].childNodes[0].nodeValue;
+
+                resultsDiv.innerHTML = `
+                    <p>Download speed: ${downloadSpeed} Mbps</p>
+                    <p>Upload speed: ${uploadSpeed} Mbps</p>
+                    <p>Speed test complete.</p>
+                `;
+            } catch (error) {
+                resultsDiv.innerHTML = 'Error fetching data. Please try again later.';
+                console.error('Error fetching data:', error);
+            }
+        }
+    </script>
+</body>
+</html>
