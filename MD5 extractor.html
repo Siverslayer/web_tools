@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="https://avatars.githubusercontent.com/u/164073129?s=400&u=548932fcc69a165cb5e8f1c93b7eb371c36b6653&v=4" type="image/png">
+
+  <title>MD5 extractor - Siverslayer</title>
+  <style>
+    body {
+      background-color: #1a1a1a;
+      font-family: Arial, sans-serif;
+      color: #e0e0e0;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden; 
+    }
+
+    header {
+      width: 100%;
+      background-color: #0d0d0d;
+      padding: 20px 0;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    nav ul li {
+      margin: 0 15px;
+    }
+
+    nav ul li a {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 18px;
+    }
+
+    main {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      width: 100%;
+      background-color: #2a2a2a;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .file-input {
+      position: relative;
+      overflow: hidden;
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #343a40;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+
+    .file-input:hover {
+      background-color: #23272b;
+    }
+
+    .file-input:active {
+      background-color: #171a1d;
+    }
+
+    .file-input input[type=file] {
+      position: absolute;
+      top: 0;
+      right: 0;
+      min-width: 100%;
+      min-height: 100%;
+      font-size: 100px;
+      text-align: right;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    textarea {
+      width: calc(100% - 40px);
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px solid #555;
+      border-radius: 5px;
+      resize: vertical;
+      font-family: inherit;
+      font-size: 14px;
+      background-color: #1a1a1a;
+      color: #e0e0e0;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      margin-top: 10px;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-primary {
+      background-color: #dc3545;
+      color: #fff;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background-color: #c82333;
+    }
+
+    .btn-primary:active {
+      background-color: #bd2130;
+    }
+
+    .btn-secondary {
+      background-color: #343a40;
+      color: #fff;
+      border: none;
+    }
+
+    .btn-secondary:hover {
+      background-color: #23272b;
+    }
+
+    .btn-secondary:active {
+      background-color: #171a1d;
+    }
+
+    .status {
+      margin-top: 10px;
+      color: red;
+      display: none;
+    }
+
+    .status.error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="https://github.com/Siverslayer">Siverslayer</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <div class="container">
+      <h1>MD5 extractor</h1>
+      <label for="file-input" class="file-input">Choose File
+        <input id="file-input" type="file" style="display:none;">
+      </label>
+      <div id="file-name"></div>
+      <button id="execute" class="btn btn-primary">Hash</button>
+      <textarea id="output" readonly placeholder="Output"></textarea>
+      <button id="copy" class="btn btn-secondary" data-clipboard-target="#output">Copy</button>
+      <p id="status" class="status"></p>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/js-md5@0.7.3/build/md5.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const inputFile = document.getElementById('file-input');
+      const outputTextarea = document.getElementById('output');
+      const executeButton = document.getElementById('execute');
+      const copyButton = document.getElementById('copy');
+      const statusElement = document.getElementById('status');
+      const fileNameElement = document.getElementById('file-name');
+
+      const clipboard = new ClipboardJS(copyButton);
+
+      clipboard.on('success', function(e) {
+        showStatus('Copied to clipboard.', false);
+        e.clearSelection();
+      });
+
+      clipboard.on('error', function(e) {
+        showStatus('Failed to copy.', true);
+      });
+
+      inputFile.addEventListener('change', function() {
+        const fileName = this.files[0].name;
+        fileNameElement.textContent = fileName;
+      });
+
+      executeButton.addEventListener('click', async () => {
+        const file = inputFile.files[0];
+        if (file) {
+          try {
+            const hash = await hashFile(file);
+            outputTextarea.value = hash;
+            showStatus('File hashed successfully.', false);
+          } catch (error) {
+            console.error('Error hashing the file:', error);
+            outputTextarea.value = 'Error hashing the file';
+            showStatus('Error hashing the file.', true);
+          }
+        } else {
+          outputTextarea.value = 'Please select a file';
+          showStatus('Please select a file.', true);
+        }
+      });
+
+      function hashFile(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const fileData = event.target.result;
+            const hash = md5(fileData);
+            resolve(hash);
+          };
+          reader.onerror = (error) => reject(error);
+          reader.readAsArrayBuffer(file);
+        });
+      }
+
+      function showStatus(message, isError) {
+        statusElement.textContent = message;
+        statusElement.classList.toggle('error', isError);
+        statusElement.style.display = 'block';
+        setTimeout(() => {
+          statusElement.style.display = 'none';
+        }, 5000);
+      }
+    });
+  </script>
+</body>
+</html>

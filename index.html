@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Siverslayer - Tools</title>
+  <link rel="icon" href="https://avatars.githubusercontent.com/u/164073129?s=400&u=548932fcc69a165cb5e8f1c93b7eb371c36b6653&v=4" type="image/png">
+  <style>
+    body {
+      background-color: #1a1a1a;
+      font-family: 'Roboto', sans-serif;
+      color: #e0e0e0;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden; 
+    }
+
+    header {
+      width: 100%;
+      background-color: #0d0d0d;
+      padding: 20px 0;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    nav ul li {
+      margin: 0 20px;
+    }
+
+    nav ul li a {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 20px;
+      transition: color 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      color: #ff6347;
+    }
+
+    main {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 40px;
+    }
+
+    #hen {
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    .link-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .link-container a {
+      background-color: #333333;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 20px 30px;
+      border-radius: 5px;
+      margin: 10px;
+      font-size: 20px;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .link-container a:hover {
+      background-color: #444444;
+      transform: translateY(-5px);
+    }
+
+    .link-container a:active {
+      background-color: #555555;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="https://github.com/Siverslayer">Siverslayer</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <section id="hen">
+      <div class="link-container">
+        <a href="./MD5 extractor.html">MD5 extractor</a>
+        <a href="./MD5 comparison between two files.html">MD5 comparison files</a>
+      </div>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
